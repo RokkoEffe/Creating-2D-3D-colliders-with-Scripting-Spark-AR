@@ -26,11 +26,11 @@ Two lines are intersecting when they are close enough to each other. And they ar
 
 ![](/images/lines-1.png)
 
-The lines above are not intersecting, but how do we know it? Well, we know each line’s center coordinate and length. Let’s find how close the lines are to each other. This is a distance between centers (d). To find it we calculate the difference in center coordinates and take the modulus (absolute) of the value.
+The lines above are not intersecting, but how do we know it? Well, we know each line’s center coordinate and length. Let’s find how close the lines are to each other. This is a distance between centers **d**. To find it we calculate the difference in center coordinates and take the modulus (absolute) of the value.
 
 ![](/images/delta.png)
 
-The distance between lines changes as the lines move. So we can compare this distance (d) to some value, that will describe the minimal possible distance between lines (dmin)before they start to intersect each other. How close the lines should be to each other, or what value should take d, before lines start to intersect? 
+The distance between lines changes as the lines move. So we can compare this distance **d** to some value, that will describe the minimal possible distance between lines **d min** before they start to intersect each other. How close the lines should be to each other, or what value should take **d**, before lines start to intersect? 
 
 ![](/images/lines-2.png)
 
@@ -38,7 +38,7 @@ From the picture above we see, that d should be less than line sizes around the 
 
 ![](/images/dmin.png)
 
-Now we clearly see that lines are not intersecting, because d>dmin. If they intersected, the picture would look like this:
+Now we clearly see that lines are not intersecting, because **d > d min**. If they intersected, the picture would look like this:
 
 ![](/images/lines-3.png)
 
@@ -56,7 +56,7 @@ When we can detect 1D collision (intersection), we can detect 2D and 3D collisio
 
 ## Using Reactive Programming to write mathematical formula
 
-To implement intersection condition formula we will need the modulus, addition, subtraction, division and less or equal operators. You can find each operator method name in the ReactiveModule page of Spark AR scripting reference.
+To implement intersection condition formula we will need the modulus, addition, subtraction, division and less or equal operators. You can find each operator method name in the `ReactiveModule` page of Spark AR scripting reference.
 
 Math Function | Reactive Operator
 --------------|------------------
@@ -236,6 +236,7 @@ Currently Entity class instance should do the following:
 * Contain object size information
 
 <h3>Declaring Entity class</h3>
+
 Let’s declare a new class. Insert this code below collision functions declarations:
 
 ```javascript
@@ -274,7 +275,7 @@ We create a new Entity instance and provide it with the scene object name and it
 
 ### Changing checkCollision3D() method to accept Entities
 
-Now we have to make changes in the `checkCollision3D()` function, because plane0 and plane1 are no longer scene objects. They’re Entity instances now, so to access objects position we should type `plane0.sceneObject.transform` instead of `plane0.transform`. Replace the old `checkCollision3D()` function code with this one:
+Now we have to make changes in the `checkCollision3D()` function, because *plane0* and *plane1* are no longer scene objects. They’re Entity instances now, so to access objects position we should type `plane0.sceneObject.transform` instead of `plane0.transform`. Replace the old `checkCollision3D()` function code with this one:
 
 ```javascript
 function checkCollision3D(entityA, entityB) {
@@ -353,7 +354,7 @@ Create another plane object on scene. Now we need to create an Entity instance a
 const plane2 = await new Entity("plane1", Reactive.point(0.1, 0.1, 0.1)).create();
 ```
 
-Now let’s check the collision between `plane0` and `plane1`, `plane2`. Add this code just after `plane2` entity initialization:
+Now let’s check the collision between *plane0* and *plane1*, *plane2*. Add this code just after *plane2* entity initialization:
 
 ```javascript
 Diagnostics.watch("plane0 with others", checkArrayCollision3D(plane0, [plane1, plane2]));
@@ -406,7 +407,7 @@ class Entity {
 })();
 ```
 
-Save the file and return to Spark AR Studio. Try to move plane0 and look at the debug lines below. It displaces true when `plane0` collides with any other plane. 
+Save the file and return to Spark AR Studio. Try to move plane0 and look at the debug lines below. It displaces true when *plane0* collides with any other plane. 
 
 ![](/images/watch-array.gif)
 
@@ -434,14 +435,14 @@ Return to script. To access material assets, we have to import `MaterialsModule`
 const Materials = require("Materials");
 ```
 
-Now let’s get reference to material0 and material1 assets. Copy this code below the lines when we’re creating Entities:
+Now let’s get reference to `material0` and `material1` assets. Copy this code below the lines when we’re creating Entities:
 
 ```javascript
 const material0 = await Materials.findFirst("material0");
 const material1 = await Materials.findFirst("material1");
 ```
 
-We will be detecting collision between plane0 and plane1 and change the color of plane1 when they collide. Call the `checkCollision3D(plane0, plane1)` and then subscribe to the `onOn()` event of this reactive boolean. Copy the following code below materials variables declaration:
+We will be detecting collision between *plane0* and *plane1* and change the color of *plane1* when they collide. Call the `checkCollision3D(plane0, plane1)` and then subscribe to the `onOn()` event of this reactive boolean. Copy the following code below materials variables declaration:
 
 ```javascript
 checkCollision3D(plane0, plane1).onOn().subscribe(() => {
@@ -449,11 +450,11 @@ checkCollision3D(plane0, plane1).onOn().subscribe(() => {
 });
 ```
 
-Return to Spark AR and try to move `plane0` around.
+Return to Spark AR and try to move *plane0* around.
 
 ![](/images/on-collision-color-1.gif)
 
-Now `plane1` changes color when it starts to collide with `plane0`, but it doesn’t return it’s initial color, when the collision ends. Let’s fix this by subscribing to `onOff()` event of collision reactive boolean. We’ll change color back to the initial. Copy the following code below previous one:
+Now *plane1* changes color when it starts to collide with *plane0*, but it doesn’t return it’s initial color, when the collision ends. Let’s fix this by subscribing to `onOff()` event of collision reactive boolean. We’ll change color back to the initial. Copy the following code below previous one:
 
 ```javascript
 checkCollision3D(plane0, plane1).onOf().subscribe(() => {
@@ -569,7 +570,7 @@ Save code and return to Spark AR. You should see that cubes don’t correspond t
 
 ![](/images/cubes-wrong-sizes.jpg)
 
-Cube model scale is too large. Select all Cube models inside each plane and change it’s scale, so the cubes are the same size as planes. This size value will be 0.5 for each axis.
+Cube model scale is too large. Select all Cube models inside each plane and change it’s scale, so the cubes are the same size as planes. This size value will be **0.5** for each axis.
 
 ![](/images/change-cube-scale.png)
 
