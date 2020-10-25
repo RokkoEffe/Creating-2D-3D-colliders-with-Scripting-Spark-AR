@@ -1,47 +1,60 @@
-<h1>Creating colliders with Scripting - Spark AR</h1>
+# Creating colliders with Scripting - Spark AR
 
 You’ll learn how to detect a 2D rectangle and 3D cuboid collision in Spark AR. We will use JavaScript and Reactive Programming style. As a collider figure we will use AABB (axis-aligned bounding box) - a figure, which edges are oriented parallel to the coordinate axes, like in the picture below.
 
+![](/images/edges-parallel-to-axis.png)
+
 We will set up a blank scene with two planes. Then we will write a script that will change the plane's material color when they collide. Also we will visualize collider bounding boxes to make it easier to change their size.
 
-<h2>Necessary assets</h2>
+## Necessary assets
 
 * box.obj - we will use it to visualize collider bounding boxes
 
-<h2>Setting up the scene</h2>
+## Setting up the scene
 
 Open Spark AR Studio and create a blank scene. Create two planes at the scene. Create a script. Your project’s scene and assets hierarchy should look this:
 
-<h2>Detect cuboid intersection mathematically</h2>
+![](/images/scene-hierarchy.jpg)
+
+## Detect cuboid intersection mathematically
 
 Let’s break the problem into parts. If we learn how to check 1D or line-with-line intersection, we can easily do similar check for 2D and 3D figures. Now we are going to check if two lines intersect.
 
-<h3>Two lines intersection</h3>
+### Two lines intersection
 
 Two lines are intersecting when they are close enough to each other. And they aren’t intersecting, when they are far away enough from each other. What describes each line’s position is the coordinate of it’s center. What describes the line's borders around the center is length, divided by 2.
 
-pic
+![](/images/lines-1.png)
 
 The lines above are not intersecting, but how do we know it? Well, we know each line’s center coordinate and length. Let’s find how close the lines are to each other. This is a distance between centers (d). To find it we calculate the difference in center coordinates and take the modulus (absolute) of the value.
-d=Ax-Bx
+
+![](/images/delta.png)
+
 The distance between lines changes as the lines move. So we can compare this distance (d) to some value, that will describe the minimal possible distance between lines (dmin)before they start to intersect each other. How close the lines should be to each other, or what value should take d, before lines start to intersect? 
 
-pic
+![](/images/lines-2.png)
 
 From the picture above we see, that d should be less than line sizes around the center, or the sum of each line’s length divided by 2.
-dmin=length(A)2+length(B)2
+
+![](/images/dmin.png)
+
 Now we clearly see that lines are not intersecting, because d>dmin. If they intersected, the picture would look like this:
+
+![](/images/lines-3.png)
 
 The lines above are intersecting, because d<dmin. 
 
 Let’s write the final formula of intersection condition.
-intersection=Ax-Bxlength(A)2+length(B)2
-Square and cuboid intersection
+
+![](/images/intersection.png)
+
+### Square and cuboid intersection
+
 When we can detect 1D collision (intersection), we can detect 2D and 3D collision by detecting collision on each dimension separately, thanks to the Separating axis theorem. We will use rectangle or cuboid edges as checkable lines. First we will project each parallel edges pair on the corresponding parallel axis. Then we will check these projections for intersections. If the rectangle or cuboid edges projections are intersecting both at X, Y and Z axes, these figures are intersecting each other. 
 
-Don’t forget that the rules above are working only for axis-aligned bounding boxes, because their edge’s projections will be equal and parallel to these edges.
+> Don’t forget that the rules above are working only for axis-aligned bounding boxes, because their edge’s projections will be equal and parallel to these edges.
 
-<h2>Using Reactive Programming to write mathematical formula</h2>
+## Using Reactive Programming to write mathematical formula
 
 To implement intersection condition formula we will need the modulus, addition, subtraction, division and less or equal operators. You can find each operator method name in the ReactiveModule page of Spark AR scripting reference.
 
@@ -61,11 +74,12 @@ const Reactive = require("Reactive");
 const Diagnostics = require("Diagnostics");
 ```
 
-Scene module allows us to access objects on scene. We will use it to get position and scale.
-Reactive module gives as methods for reactive programming.
-Diagnostics module lets you write messages to the console or watch reactive variable values.
+**Scene** module allows us to access objects on scene. We will use it to get position and scale.
+**Reactive** module gives as methods for reactive programming.
+**Diagnostics** module lets you write messages to the console or watch reactive variable values.
 
-<h3>One axis collision</h3>
+### One axis collision
+
 To implement line intersection formula, we will declare a function that will accept each line coordinate and length and check them for intersection. It will return a reactive boolean that will determine are the lines intersecting or not. Copy this code to the script:
 
 ```javascript
@@ -151,7 +165,7 @@ Now you see the console and reactive variables at the bottom of the window.
 It says that there’s a collision on each axis. Try to move one plane away from another. The values should change.
 
 
-<h2>Rectange and cuboid (2D/3D) collision</h2>
+## Rectange and cuboid (2D/3D) collision
 
 The objects are colliding if they’re colliding at all axes at the same time. To get a single condition variable for 3D collision, we have to combine each axis collision check. Also we have to declare object size at X, Y and Z axes separately. 
 
@@ -211,7 +225,7 @@ function checkCollision3D(objectA, objectB, sizeA, sizeB) {
 
 Save file and return to Spark AR Studio. Try to move the planes and watch as the debug value changes.
 
-<h2>Refactoring: creating Entity class to describe scene objects</h2>
+## Refactoring: creating Entity class to describe scene objects
 
 This collision code looks simple before you start to scale the project. Imagine if we need to detect collision of one object with an array of objects. In that case we will have to write a separate checkCollision3D() call for each possible pair of objects and then combine these conditions using Reactive.orList(). To simplify this and do this in a loop, we have to make scene objects abstract, so we can operate over them without knowing which exact scene objects we have. Let’s create a class that will describe an object at scene. We can use this class later to extend object capabilities - for example, add some properties such as Health, Speed or Spawn Rate, if we’re creating a game filter.
 
@@ -256,7 +270,7 @@ const plane1 = await new Entity("plane1", Reactive.point(0.1, 0.1, 0.1)).create(
 
 We create a new Entity instance and provide it with the scene object name and it’s size. Then we immediately call create() async method on this instance to link this new Entity to the scene object, and wait until this operation is done. Then we do the same with the second plane. 
 
-<h3>Changing checkCollision3D() method to accept Entities</h3>
+### Changing checkCollision3D() method to accept Entities
 
 Now we have to make changes in the checkCollision3D() function, because plane0 and plane1 are no longer scene objects. They’re Entity instances now, so to access objects position we should type plane0.sceneObject.transform instead of plane0.transform. Replace the old checkCollision3D() function code with this one:
 
@@ -318,7 +332,7 @@ class Entity {
 })();
 ```
 
-<h2>Detecting collision of one object with an array of objects</h2>
+## Detecting collision of one object with an array of objects
 
 Let’s declare a new function called checkArrayCollision3D(). It will accept an entity and an array of other entities which we will be checking for collision with an entity. We will return an Reactive.orList(), which will contain collision checks of every pair of entity with other entities. Copy this code below other functions in the script:
 
@@ -397,7 +411,8 @@ Save the file and return to Spark AR Studio. Try to move plane0 and look at the 
 
 For example, this can be useful when creating gaming filters to check if a player collides with a set of enemies or collectible bonuses.
 
-<h2>Doing action on collision</h2>
+## Doing action on collision
+
 We will change the plane's color when they collide, and write a message to the console. To change plane color, we will swap it’s material.
 
 Create two materials by clicking Add Asset - Material in the Assets window. We will use material0 when planes aren’t in collision, and material1 when they’re.
@@ -489,6 +504,3 @@ Return to Spark AR Studio.
 
 
 Collider visualizations changed their size. When you’re ready with setting up collider sizes, you can just disable Visible property of cube object.
-
-
-
