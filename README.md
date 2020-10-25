@@ -159,11 +159,15 @@ function checkCollision(positionA, positionB, lengthA, lengthB) {
 
 Save the file and return to Spark AR Studio. At the top of the window click View and then Show/Hide Console.
 
+![](/images/show-console.jpg)
+
 Now you see the console and reactive variables at the bottom of the window.
 
+![](/images/watch-collision-true.jpg)
 
 It says that there’s a collision on each axis. Try to move one plane away from another. The values should change.
 
+![](/images/watch-xyz.gif)
 
 ## Rectange and cuboid (2D/3D) collision
 
@@ -224,6 +228,8 @@ function checkCollision3D(objectA, objectB, sizeA, sizeB) {
 ```
 
 Save file and return to Spark AR Studio. Try to move the planes and watch as the debug value changes.
+
+![](/images/watch-3d.gif)
 
 ## Refactoring: creating Entity class to describe scene objects
 
@@ -287,8 +293,8 @@ function checkCollision3D(entityA, entityB) {
 Now change the way we call checkCollision3D(). You should use Entities as function arguments.
 
 ```javascript
-    Diagnostics.watch("plane0 with others", checkArrayCollision(plane0, [plane1, plane2]));
-    Diagnostics.watch("plane0 with plane1", checkCollision3D(plane0, plane1));
+Diagnostics.watch("plane0 with others", checkArrayCollision(plane0, [plane1, plane2]));
+Diagnostics.watch("plane0 with plane1", checkCollision3D(plane0, plane1));
 ```
 
 After we’ve done with refactoring, the code should look like this:
@@ -408,6 +414,7 @@ class Entity {
 
 Save the file and return to Spark AR Studio. Try to move plane0 and look at the debug lines below. It displaces true when plane0 collides with any other plane. 
 
+![](/images/watch-array.gif)
 
 For example, this can be useful when creating gaming filters to check if a player collides with a set of enemies or collectible bonuses.
 
@@ -417,11 +424,15 @@ We will change the plane's color when they collide, and write a message to the c
 
 Create two materials by clicking Add Asset - Material in the Assets window. We will use material0 when planes aren’t in collision, and material1 when they’re.
 
+![](/images/create-material.gif)
+
 Change material1 color to a unique one, so we can distinguish planes in collision. Select material and use the properties window at the right.
 
+![](/images/change-material-color.gif)
 
 Now select each plane scene object and add material0 to it. Plane should change its color.
 
+![](/images/assign-material.gif)
 
 Return to script. To access material assets, we have to import MaterialsModule. Add this code at the top of the script:
 
@@ -432,46 +443,55 @@ const Materials = require("Materials");
 Now let’s get reference to material0 and material1 assets. Copy this code below the lines when we’re creating Entities:
 
 ```javascript
-    const material0 = await Materials.findFirst("material0");
-    const material1 = await Materials.findFirst("material1");
+const material0 = await Materials.findFirst("material0");
+const material1 = await Materials.findFirst("material1");
 ```
 
 We will be detecting collision between plane0 and plane1 and change the color of plane1 when they collide. Call the checkCollision3D(plane0, plane1) and then subscribe to the onOn() event of this reactive boolean. Copy the following code below materials variables declaration:
 
 ```javascript
-    checkCollision3D(plane0, plane1).onOn().subscribe(() => {
-        plane1.sceneObject.material = material1;
-    });
+checkCollision3D(plane0, plane1).onOn().subscribe(() => {
+    plane1.sceneObject.material = material1;
+});
 ```
 
 Return to Spark AR and try to move plane0 around.
 
+![](/images/on-collision-color-1.gif)
 
 Now plane1 changes color when it starts to collide with plane0, but it doesn’t return it’s initial color, when the collision ends. Let’s fix this by subscribing to onOff() event of collision reactive boolean. We’ll change color back to the initial. Copy the following code below previous one:
 
 ```javascript
-    checkCollision3D(plane0, plane1).onOf().subscribe(() => {
-        plane1.sceneObject.material = material0;
-    });
+checkCollision3D(plane0, plane1).onOf().subscribe(() => {
+    plane1.sceneObject.material = material0;
+});
 ```
 
 Try to move planes now.
 
+![](/images/on-collision-color-2.gif)
+
 Now plane1 changes color back when collision ends.
-Visualizing collider bounding boxes
+
+## Visualizing collider bounding boxes
+
 To make setting up collider sizes easier, we will visualize collider bounding boxes. We will attach a 3D cube model to each plane and apply semi-transparent material to this cube. Then we will be changing this cube’s scale as the size of the plane collider changes.
 
 Drag cube.obg file to Assets window.
 
+![](/images/drag-n-drop-cube.gif)
 
 This model comes with default material, but it’s gray and opaque, which is not the best choice for collider visualization. Select this material.
 
+![](/images/icube-material-select.jpg)
 
 At the right side of the Spark AR Studio, change material color to something bright. Change Blend Mode to Associative Alpha and set Opacity to 50%. This way material becomes semi-transparent.
 
+![](/images/collider-mat-properties.png)
 
 Now drag the cube model inside every plane scene object, so cube becomes their child.
 
+![](/images/cube-plane-hierarchy.jpg)
 
 Return to code. We have to link collider size with cube child size. Add this line to Entity.create() method just after we get reference to entity’s scene object:
 
@@ -482,25 +502,31 @@ Return to code. We have to link collider size with cube child size. Add this lin
 Method Entity.create() should look like this:
 
 ```javascript
-    async create() {
-        this.sceneObject = await Scene.root.findFirst(this.name);
-        (await this.sceneObject.findFirst("cube")).transform.scale = this.size;
-        return this;
-    }
+async create() {
+    this.sceneObject = await Scene.root.findFirst(this.name);
+    (await this.sceneObject.findFirst("cube")).transform.scale = this.size;
+    return this;
+}
 ```
 
 Note that we call findFirst() method on entity sceneObject property. This findFirst() method will search objects only inside the object on which we called this method. So it will never return other scene objects named cube, because they are children of different planes. 
 
 Save code and return to Spark AR. You should see that cubes don’t correspond to real collider sizes.
 
+![](/images/cubes-wrong-sizes.jpg)
 
 Cube model scale is too large. Select all Cube models inside each plane and change it’s scale, so the cubes are the same size as planes. This size value will be 0.5 for each axis.
 
+![](/images/change-cube-scale.png)
 
 Now we’ve visualized collider bounding boxes size. Try to play around with collider sizes to see if visualized cubes change.
 
+![](/images/change-collider-sizes.gif)
 
 Return to Spark AR Studio.
 
+![](/images/colliders-different-sizes.jpg)
 
 Collider visualizations changed their size. When you’re ready with setting up collider sizes, you can just disable Visible property of cube object.
+
+![](/images/disable-visualization.gif)
