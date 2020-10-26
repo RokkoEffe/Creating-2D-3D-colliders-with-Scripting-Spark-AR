@@ -621,6 +621,6 @@ Collider visualizations changed their size. When you’re ready with setting up 
 
 ## What's next?
 
-* You can [download full project]() to observe it.
+* You can [download full project](collision-tutorial.arprojpkg) to observe it.
 * [Read more tutorials](https://sparkar.facebook.com/ar-studio/learn/tutorials) about Spark AR
 * PM me on [Telegram](t.me/rokkoeffe) to give me any feedback
