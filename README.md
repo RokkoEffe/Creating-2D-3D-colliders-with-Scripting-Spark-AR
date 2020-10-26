@@ -6,9 +6,13 @@ You’ll learn how to detect a 2D rectangle and 3D cuboid collision in Spark AR.
 
 We will set up a blank scene with two planes. Then we will write a script that will change the plane's material color when they collide. Also we will visualize collider bounding boxes to make it easier to change their size.
 
+To complete this tutorial, you have know Spark AR and JavaScript basics. If you've never been working with Spark AR, try to complete some [official tutorials](https://sparkar.facebook.com/ar-studio/learn/tutorials).
+
+We'll use Spark AR Studio v99.
+
 ## Necessary assets
 
-* box.obj - we will use it to visualize collider bounding boxes
+* [box.obj](/cube.obj) - we will use it to visualize collider bounding boxes
 
 ## Setting up the scene
 
@@ -585,3 +589,9 @@ Return to Spark AR Studio.
 Collider visualizations changed their size. When you’re ready with setting up collider sizes, you can just disable Visible property of cube object.
 
 ![](/images/disable-visualization.gif)
+
+## What's next?
+
+* You can [download full project]() to observe it.
+* [Read more tutorials](https://sparkar.facebook.com/ar-studio/learn/tutorials) about Spark AR
+* PM me on [Telegram](t.me/rokkoeffe) to give me any feedback
