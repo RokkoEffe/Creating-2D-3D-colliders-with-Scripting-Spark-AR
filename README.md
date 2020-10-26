@@ -1,5 +1,7 @@
 # Creating colliders with Scripting - Spark AR
 
+Quick walkthrough on this tutorial: https://youtu.be/P12jfVloF5Y
+
 You’ll learn how to detect a 2D rectangle and 3D cuboid collision in Spark AR. We will use JavaScript and Reactive Programming style. As a collider figure we will use AABB (axis-aligned bounding box) - a figure, which edges are oriented parallel to the coordinate axes, like in the picture below.
 
 ![](/images/edges-parallel-to-axis.png)
