@@ -70,7 +70,8 @@ subtraction | Reactive.sub()
 division | Reactive.div()
 less or equal | Reactive.le()
 
-###### Importing modules
+##### Importing modules
+
 Open the script and remove everything from it. Import Scene, Reactive and Diagnostics modules.
 
 ```javascript
@@ -97,7 +98,7 @@ function checkCollision(positionA, positionB, lengthA, lengthB) {
 
 We’ve just rewrited the intersection formula using reactive operators. The line’s position will be scene object’s X, Y or Z coordinates. The length will be the size of the scene object’s on the X, Y or Z axis. For the default planes this size equals **0.1 units**. 
 
-###### Running asynchronous code
+##### Running asynchronous code
 
 To accept scene object’s from code, we will use `Scene.root.findFirst()` method, which returns a promise that’ll be resolved as the object is found. To easily run asynchronous code, we will declare an immediately invoked async function and write all code inside it. Copy this code:
 
