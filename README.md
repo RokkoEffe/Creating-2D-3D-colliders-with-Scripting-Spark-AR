@@ -4,7 +4,11 @@ You’ll learn how to detect a 2D rectangle and 3D cuboid collision in Spark AR.
 
 ![](/images/edges-parallel-to-axis.png)
 
+#### Steps
+
 We will set up a blank scene with two planes. Then we will write a script that will change the plane's material color when they collide. Also we will visualize collider bounding boxes to make it easier to change their size.
+
+#### Knowledge requirements
 
 To complete this tutorial, you have know Spark AR and JavaScript basics. If you've never been working with Spark AR, try to complete some [official tutorials](https://sparkar.facebook.com/ar-studio/learn/tutorials).
 
@@ -38,7 +42,7 @@ The distance between lines changes as the lines move. So we can compare this dis
 
 ![](/images/lines-2.png)
 
-From the picture above we see, that d should be less than line sizes around the center, or the sum of each line’s length divided by 2.
+From the picture above we see, that **d** should be less than line sizes around the center, or the sum of each line’s length divided by 2.
 
 ![](/images/dmin.png)
 
@@ -54,13 +58,13 @@ Let’s write the final formula of intersection condition.
 
 ### Square and cuboid intersection
 
-When we can detect 1D collision (intersection), we can detect 2D and 3D collision by detecting collision on each dimension separately, thanks to the Separating axis theorem. We will use rectangle or cuboid edges as checkable lines. First we will project each parallel edges pair on the corresponding parallel axis. Then we will check these projections for intersections. If the rectangle or cuboid edges projections are intersecting both at X, Y and Z axes, these figures are intersecting each other. 
+When we can detect 1D collision (intersection), we can detect 2D and 3D collision by detecting collision on each dimension separately, thanks to the [Separating axis theorem](https://en.wikipedia.org/wiki/Hyperplane_separation_theorem). We will use rectangle or cuboid edges as checkable lines. First we will project each parallel edges pair on the corresponding parallel axis. Then we will check these projections for intersections. If the rectangle or cuboid edges projections are intersecting both at X, Y and Z axes, these figures are intersecting each other. 
 
 > Don’t forget that the rules above are working only for axis-aligned bounding boxes, because their edge’s projections will be equal and parallel to these edges.
 
 ## Using Reactive Programming to write mathematical formula
 
-To implement intersection condition formula we will need the modulus, addition, subtraction, division and less or equal operators. You can find each operator method name in the `ReactiveModule` page of Spark AR scripting reference.
+To implement intersection condition formula we will need the *modulus*, *addition*, *subtraction*, *division* and *less or equal operators*. You can find each operator method name in the `ReactiveModule` [page](https://sparkar.facebook.com/ar-studio/learn/reference/classes/reactivemodule) of Spark AR scripting reference.
 
 Math Function | Reactive Operator
 --------------|------------------
@@ -72,7 +76,7 @@ less or equal | Reactive.le()
 
 #### Importing modules
 
-Open the script and remove everything from it. Import Scene, Reactive and Diagnostics modules.
+Open the script and remove everything from it. Import 'Scene', 'Reactive' and 'Diagnostics' modules by copying the code below:
 
 ```javascript
 const Scene = require("Scene");
@@ -248,7 +252,7 @@ Currently Entity class instance should do the following:
 * Store reference to scene object
 * Contain object size information
 
-<h3>Declaring Entity class</h3>
+### Declaring Entity class
 
 Let’s declare a new class. Insert this code below collision functions declarations:
 
@@ -261,7 +265,7 @@ class Entity {
 }
 ```
 
-When we create an Entity instance, we’ll be calling the `constructor()` method of Entity. We’ll have to provide it with a scene object name and it’s size vector. 
+When we create an Entity instance, we call the `constructor()` method of Entity. We have to provide it with a scene object name and it’s collider size vector. 
 
 #### Linking scene object to entity
 
@@ -292,7 +296,7 @@ At the lines above, we create a new Entity instance and provide it with the scen
 
 ### Changing checkCollision3D() method to accept Entities
 
-Now we have to make changes in the `checkCollision3D()` function, because *plane0* and *plane1* are no longer scene objects. They’re Entity instances now, so to access objects position we should type `plane0.sceneObject.transform` instead of `plane0.transform`. Replace the old `checkCollision3D()` function code with this one:
+Now we have to make changes in the `checkCollision3D()` function, because *plane0* and *plane1* are no longer *scene objects*. They’re *Entity instances* now, so to access objects position we should type `plane0.sceneObject.transform` instead of `plane0.transform`. Replace the old `checkCollision3D()` function code with this one:
 
 ```javascript
 function checkCollision3D(entityA, entityB) {
@@ -307,7 +311,6 @@ function checkCollision3D(entityA, entityB) {
 Now change the way we call `checkCollision3D()`. You should use Entities as function arguments.
 
 ```javascript
-Diagnostics.watch("plane0 with others", checkArrayCollision(plane0, [plane1, plane2]));
 Diagnostics.watch("plane0 with plane1", checkCollision3D(plane0, plane1));
 ```
 
@@ -436,7 +439,7 @@ For example, this can be useful when creating gaming filters to check if a playe
 
 ## Doing action on collision
 
-We will change the plane's color when they collide, and write a message to the console. To change plane color, we will swap it’s material.
+We will change the plane's color when they collide. To change plane color, we will swap it’s material.
 
 #### Create new materials
 
@@ -484,7 +487,7 @@ Return to Spark AR and try to move *plane0* around.
 Now *plane1* changes color when it starts to collide with *plane0*, but it doesn’t return it’s initial color, when the collision ends. Let’s fix this by subscribing to `onOff()` event of collision reactive boolean. We’ll change color back to the initial. Copy the following code below previous one:
 
 ```javascript
-checkCollision3D(plane0, plane1).onOf().subscribe(() => {
+checkCollision3D(plane0, plane1).onOff().subscribe(() => {
     plane1.sceneObject.material = material0;
 });
 ```
@@ -535,7 +538,7 @@ async create() {
 }
 ```
 
-Note that we call `findFirst()` method on entity sceneObject property. This `findFirst()` method will search objects only inside the object on which we called this method. So it will never return other scene objects named cube, because they are children of different planes. 
+Note that we call `findFirst()` method on entity sceneObject property. This `findFirst()` method will search objects only inside the object on which we called this method. So it will never return other scene objects named *cube*, because they are children of different planes. 
 
 Your very final script should look like:
 
@@ -615,7 +618,7 @@ Return to Spark AR Studio.
 
 ![](/images/colliders-different-sizes.jpg)
 
-Collider visualizations changed their size. When you’re ready with setting up collider sizes, you can just disable Visible property of cube object.
+Collider visualizations changed their size. When you’re ready with setting up collider sizes, you can just disable *Visible* property of cube object.
 
 ![](/images/disable-visualization.gif)
 
