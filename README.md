@@ -10,7 +10,7 @@ We will set up a blank scene with two planes. Then we will write a script that w
 
 #### Knowledge requirements
 
-To complete this tutorial, you have know Spark AR and JavaScript basics. If you've never been working with Spark AR, try to complete some [official tutorials](https://sparkar.facebook.com/ar-studio/learn/tutorials).
+To complete this tutorial, you have to know some basics of Spark AR and JavaScript. If you've never been working with Spark AR, try to complete these [official tutorials](https://sparkar.facebook.com/ar-studio/learn/tutorials).
 
 We'll use Spark AR Studio v99.
 
