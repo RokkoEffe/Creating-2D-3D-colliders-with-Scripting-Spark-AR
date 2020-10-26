@@ -70,7 +70,7 @@ subtraction | Reactive.sub()
 division | Reactive.div()
 less or equal | Reactive.le()
 
-##### Importing modules
+#### Importing modules
 
 Open the script and remove everything from it. Import Scene, Reactive and Diagnostics modules.
 
