@@ -70,6 +70,7 @@ subtraction | Reactive.sub()
 division | Reactive.div()
 less or equal | Reactive.le()
 
+###### Importing modules
 Open the script and remove everything from it. Import Scene, Reactive and Diagnostics modules.
 
 ```javascript
@@ -96,6 +97,8 @@ function checkCollision(positionA, positionB, lengthA, lengthB) {
 
 We’ve just rewrited the intersection formula using reactive operators. The line’s position will be scene object’s X, Y or Z coordinates. The length will be the size of the scene object’s on the X, Y or Z axis. For the default planes this size equals **0.1 units**. 
 
+###### Running asynchronous code
+
 To accept scene object’s from code, we will use `Scene.root.findFirst()` method, which returns a promise that’ll be resolved as the object is found. To easily run asynchronous code, we will declare an immediately invoked async function and write all code inside it. Copy this code:
 
 ```javascript
@@ -105,6 +108,8 @@ To accept scene object’s from code, we will use `Scene.root.findFirst()` metho
 ```
 
 This function will be called immediately after it is initialized, and we will be able to run code asynchronously inside it.
+
+###### Accessing scene objects from code
 
 Let’s access the plane's scene objects. Copy this code inside newly created async function:
 ```javascript
@@ -128,6 +133,8 @@ function checkCollision(positionA, positionB, lengthA, lengthB) {
     const plane1 = await Scene.root.findFirst("plane1");
 })();
 ```
+
+###### Checking intersection at each axis
 
 Let’s call the `checkCollision()` function for each axis separately, so we can see at which axes these planes are intersecting. We will watch the result of this function using `Diagnostics.watch()` function, which shows reactive variable value in real time. Add this code below the planes find operations:
 
@@ -174,6 +181,7 @@ It says that there’s a collision on each axis. Try to move one plane away from
 
 The objects are colliding if they’re colliding at all axes at the same time. To get a single condition variable for 3D collision, we have to combine each axis collision check. Also we have to declare object size at X, Y and Z axes separately. 
 
+###### Create a function for 3D collision check
 Let’s declare a new function named `checkCollision3D()`, which will take two scene objects and their sizes as inputs. We will use `Reactive.point()` to create a *PointSignal* value to store object size. To combine each axis collision check we will use `Reactive.andList()` function, which returns true while every variable inside the specified array returns true. We’ll put every separate axis collision condition inside this list. Copy this code below `checkCollision()` function declaration:
 
 ```javascript
@@ -252,7 +260,11 @@ class Entity {
 }
 ```
 
-When we create an Entity instance, we’ll be calling the `constructor()` method of Entity. We’ll have to provide it with a scene object name and it’s size vector. Let’s write a method that will find a scene object using its name and save it as an Entity instance property. Add a method called `create()` to the Entity class, so the class looks like this:
+When we create an Entity instance, we’ll be calling the `constructor()` method of Entity. We’ll have to provide it with a scene object name and it’s size vector. 
+
+###### Linking scene object to entity
+
+Let’s write a method that will find a scene object using its name and save it as an Entity instance property. Add a method called `create()` to the Entity class, so the class looks like this:
 
 ```javascript
 class Entity {
@@ -275,7 +287,7 @@ const plane0 = await new Entity("plane0", Reactive.point(0.1, 0.1, 0.1)).create(
 const plane1 = await new Entity("plane1", Reactive.point(0.1, 0.1, 0.1)).create();
 ```
 
-We create a new Entity instance and provide it with the scene object name and it’s size. Then we immediately call `create()` async method on this instance to link this new Entity to the scene object, and wait until this operation is done. Then we do the same with the second plane. 
+At the lines above, we create a new Entity instance and provide it with the scene object name and it’s size. Then we immediately call `create()` async method on this instance to link this new Entity to the scene object, and wait until this operation is done. Then we do the same with the second plane. 
 
 ### Changing checkCollision3D() method to accept Entities
 
@@ -340,6 +352,8 @@ class Entity {
 
 ## Detecting collision of one object with an array of objects
 
+###### Declaring a new function for array collision check
+
 Let’s declare a new function called `checkArrayCollision3D()`. It will accept an entity and an array of other entities which we will be checking for collision with an entity. We will return an `Reactive.orList()`, which will contain collision checks of every pair of entity with other entities. Copy this code below other functions in the script:
 
 ```javascript
@@ -351,6 +365,8 @@ function checkArrayCollision3D(entityA, otherEntities) {
 ```
 
 We’ve used `.map()` method on `otherEntities` array to return a new array. This new array contains collision checks between every pair of entity with another entities. We placed these collision checks inside `Reactive.orList()` function, which returns true if any of conditions in the list returns true.
+
+###### Creating more plane objects for tests
 
 Create another plane object on scene. Now we need to create an Entity instance and link it to this scene object. Add the following code below the lines where we get other plane objects:
 
@@ -421,6 +437,8 @@ For example, this can be useful when creating gaming filters to check if a playe
 
 We will change the plane's color when they collide, and write a message to the console. To change plane color, we will swap it’s material.
 
+###### Creating new materials
+
 Create two materials by clicking *Add Asset* - *Material* in the Assets window. We will use `material0` when planes aren’t in collision, and `material1` when they’re.
 
 ![](/images/create-material.gif)
@@ -429,9 +447,13 @@ Change material1 color to a unique one, so we can distinguish planes in collisio
 
 ![](/images/change-material-color.gif)
 
+###### Assigning materials to planes 
+
 Now select each plane scene object and add `material0` to it. Plane should change its color.
 
 ![](/images/assign-material.gif)
+
+###### Accessing materials from script
 
 Return to script. To access material assets, we have to import `MaterialsModule`. Add this code at the top of the script:
 
@@ -476,6 +498,8 @@ Now plane1 changes color back when collision ends.
 
 To make setting up collider sizes easier, we will visualize collider bounding boxes. We will attach a 3D cube model to each plane and apply semi-transparent material to this cube. Then we will be changing this cube’s scale as the size of the plane collider changes.
 
+###### Adding 3D cube model for visualization
+
 Drag **cube.obj** file to Assets window.
 
 ![](/images/drag-n-drop-cube.gif)
@@ -491,6 +515,8 @@ At the right side of the Spark AR Studio, change material color to something bri
 Now drag the cube model inside every plane scene object, so cube becomes their child.
 
 ![](/images/cube-plane-hierarchy.jpg)
+
+###### Linking 3D cube model to collider size
 
 Return to code. We have to link collider size with cube child size. Add this line to `Entity.create()` method just after we get reference to entity’s scene object:
 
@@ -573,6 +599,8 @@ class Entity {
 Save code and return to Spark AR. You should see that cubes don’t correspond to real collider sizes.
 
 ![](/images/cubes-wrong-sizes.jpg)
+
+###### Fixing wrong cube size
 
 Cube model scale is too large. Select all Cube models inside each plane and change it’s scale, so the cubes are the same size as planes. This size value will be **0.5** for each axis.
 
