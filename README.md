@@ -50,7 +50,7 @@ Now we clearly see that lines are not intersecting, because **d > d min**. If th
 
 ![](/images/lines-3.png)
 
-The lines above are intersecting, because **d < dmin**. 
+The lines above are intersecting, because **d < d min**. 
 
 Let’s write the final formula of intersection condition.
 
@@ -182,7 +182,7 @@ It says that there’s a collision on each axis. Try to move one plane away from
 
 ![](/images/watch-xyz.gif)
 
-## Rectange and cuboid (2D/3D) collision
+## Rectangle and cuboid (2D/3D) collision
 
 The objects are colliding if they’re colliding at all axes at the same time. To get a single condition variable for 3D collision, we have to combine each axis collision check. Also we have to declare object size at X, Y and Z axes separately. 
 
@@ -447,7 +447,7 @@ Create two materials by clicking *Add Asset* - *Material* in the Assets window. 
 
 ![](/images/create-material.gif)
 
-Change material1 color to a unique one, so we can distinguish planes in collision. Select material and use the properties window at the right.
+Change `material1` color to a unique one, so we can distinguish planes in collision. Select material and use the properties window at the right.
 
 ![](/images/change-material-color.gif)
 
@@ -496,7 +496,7 @@ Try to move planes now.
 
 ![](/images/on-collision-color-2.gif)
 
-Now plane1 changes color back when collision ends.
+Now *plane1* changes color back when collision ends.
 
 ## Visualizing collider bounding boxes
 
