@@ -50,7 +50,7 @@ Now we clearly see that lines are not intersecting, because **d > d min**. If th
 
 ![](/images/lines-3.png)
 
-The lines above are intersecting, because d<dmin. 
+The lines above are intersecting, because **d < dmin**. 
 
 Let’s write the final formula of intersection condition.
 
@@ -624,6 +624,6 @@ Collider visualizations changed their size. When you’re ready with setting up 
 
 ## What's next?
 
-* You can [download full project](collision-tutorial.arprojpkg) to observe it.
+* You can [download full project](collision-tutorial.arprojpkg) to observe it
 * [Read more tutorials](https://sparkar.facebook.com/ar-studio/learn/tutorials) about Spark AR
 * DM me on [Messenger](https://www.messenger.com/t/rokkoeffe) to give me any feedback
