@@ -20,12 +20,6 @@ We'll use Spark AR Studio v99.
 
 * [box.obj](/cube.obj) - we will use it to visualize collider bounding boxes
 
-## Setting up the scene
-
-Open Spark AR Studio and create a blank scene. Create two planes at the scene. Create a script. Your project’s scene and assets hierarchy should look this:
-
-![](/images/scene-hierarchy.jpg)
-
 ## Detect cuboid intersection mathematically
 
 Let’s break the problem into parts. If we learn how to check 1D or line-with-line intersection, we can easily do similar check for 2D and 3D figures. Now we are going to check if two lines intersect.
@@ -63,6 +57,12 @@ Let’s write the final formula of intersection condition.
 When we can detect 1D collision (intersection), we can detect 2D and 3D collision by detecting collision on each dimension separately, thanks to the [Separating axis theorem](https://en.wikipedia.org/wiki/Hyperplane_separation_theorem). We will use rectangle or cuboid edges as checkable lines. First we will project each parallel edges pair on the corresponding parallel axis. Then we will check these projections for intersections. If the rectangle or cuboid edges projections are intersecting both at X, Y and Z axes, these figures are intersecting each other. 
 
 > Don’t forget that the rules above are working only for axis-aligned bounding boxes, because their edge’s projections will be equal and parallel to these edges.
+
+## Setting up the scene
+
+Open Spark AR Studio and create a blank scene. Create two planes at the scene. Create a script. Your project’s scene and assets hierarchy should look this:
+
+![](/images/scene-hierarchy.jpg)
 
 ## Using Reactive Programming to write mathematical formula
 
