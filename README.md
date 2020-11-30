@@ -60,7 +60,15 @@ When we can detect 1D collision (intersection), we can detect 2D and 3D collisio
 
 ## Setting up the scene
 
-Open Spark AR Studio and create a blank scene. Create two planes at the scene. Create a script. Your project’s scene and assets hierarchy should look this:
+Open Spark AR Studio and create a blank project. Create two planes at the scene. 
+
+![](/images/create-planes.gif)
+
+Create a new script at the *Assets* window.
+
+![](/images/create-script.gif)
+
+Your project’s scene and assets hierarchy should look this:
 
 ![](/images/scene-hierarchy.jpg)
 
