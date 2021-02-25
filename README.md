@@ -96,7 +96,7 @@ const Diagnostics = require("Diagnostics");
 
 `Scene` module allows us to access objects on scene. We will use it to get position and scale.
 
-`Reactive` module gives as methods for reactive programming.
+`Reactive` module gives us methods for reactive programming.
 
 `Diagnostics` module lets you write messages to the console or watch reactive variable values.
 
