@@ -114,7 +114,7 @@ We’ve just rewrited the intersection formula using reactive operators. The lin
 
 #### Running asynchronous code
 
-To accept scene object’s from code, we will use `Scene.root.findFirst()` method, which returns a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) that’ll be resolved as the object is found. To easily run asynchronous code, we will declare an immediately invoked async function and write all code inside it. Copy this code:
+To accept scene object’s from code, we will use `Scene.root.findFirst()` method, which returns a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) that’ll be resolved as the object is found. To easily run asynchronous code, we will declare an [immediately invoked async function](https://flaviocopes.com/javascript-iife/) and write all code inside it. Copy this code:
 
 ```javascript
 (async () => {
