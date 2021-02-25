@@ -119,7 +119,7 @@ To accept scene object’s from code, we will use `Scene.root.findFirst()` metho
 ```javascript
 (async () => {
     // async code goes here
-});
+})();
 ```
 
 This function will be called immediately after it is initialized, and we will be able to run code asynchronously inside it.
