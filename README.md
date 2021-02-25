@@ -132,7 +132,7 @@ const plane0 = await Scene.root.findFirst("plane0");
 const plane1 = await Scene.root.findFirst("plane1");
 ```
 
-Operator await tells the program to wait until the following operation is done. The script will pause and wait before the `Scene.root.findFirst()` function returns the reference to the plane object, which we then save to a variable. Now your script should look like this:
+Operator `await` tells the program to wait until the following operation is done. The script will pause and wait before the `Scene.root.findFirst()` function returns the reference to the plane object, which we then save to a variable. Now your script should look like this:
 
 ```javascript
 const Scene = require("Scene");
@@ -197,7 +197,7 @@ It says that there’s a collision on each axis. Try to move one plane away from
 The objects are colliding if they’re colliding at all axes at the same time. To get a single condition variable for 3D collision, we have to combine each axis collision check. Also we have to declare object size at X, Y and Z axes separately. 
 
 #### Create a function for 3D collision check
-Let’s declare a new function named `checkCollision3D()`, which will take two scene objects and their sizes as inputs. We will use `Reactive.point()` to create a *PointSignal* value to store object size. To combine each axis collision check we will use `Reactive.andList()` function, which returns true while every variable inside the specified array returns true. We’ll put every separate axis collision condition inside this list. Copy this code below `checkCollision()` function declaration:
+Let’s declare a new function named `checkCollision3D()`, which will take two scene objects and their sizes as inputs. We will use `Reactive.point()` to create a *PointSignal* value to store object size. To combine each axis collision check we will use `Reactive.andList()` function, which returns *true* only while every variable inside the specified array returns *true*. We’ll put every separate axis collision condition inside this list. Copy this code below `checkCollision()` function declaration:
 
 ```javascript
 function checkCollision3D(objectA, objectB, sizeA, sizeB) {
@@ -256,7 +256,7 @@ Save file and return to Spark AR Studio. Try to move the planes and watch as the
 
 ## Refactoring: creating Entity class to describe scene objects
 
-This collision code looks simple before you start to scale the project. Imagine if we need to detect collision of one object with an array of objects. In that case we will have to write a separate `checkCollision3D()` call for each possible pair of objects and then combine these conditions using `Reactive.orList()`. To simplify this and do this in a loop, we have to make scene objects abstract, so we can operate over them without knowing which exact scene objects we have. Let’s create a class that will describe an object at scene. We can use this class later to extend object capabilities - for example, add some properties such as *Health*, *Speed* or *Spawn Rate*, if we’re creating a game filter.
+This collision code looks simple before you start to scale the project. Imagine if we need to detect collision of one object with an array of objects. In that case we will have to write a separate `checkCollision3D()` call for each possible pair of objects and then combine these conditions using `Reactive.orList()`. To simplify this and do it in a loop, we have to make scene objects abstract, so we can operate over them without knowing which exact scene objects we have. Let’s create a class that will describe an object at scene. We can use this class later to extend object capabilities - for example, by adding some properties such as *Health*, *Speed* or *Spawn Rate*, if we’re creating a game filter.
 
 Currently Entity class instance should do the following:
 * Store reference to scene object
@@ -295,18 +295,18 @@ class Entity {
 }
 ```
 
-Now find the lines where we were saving references to plane’s scene objects and replace them with the following code:
+We wrote `return this` in `create()` method to make it return an *Entity* class instance. This method will be used as a class instance consctuctor. Now find the lines where we were saving references to plane’s scene objects and replace them with the following code:
 
 ```javascript
 const plane0 = await new Entity("plane0", Reactive.point(0.1, 0.1, 0.1)).create();
 const plane1 = await new Entity("plane1", Reactive.point(0.1, 0.1, 0.1)).create();
 ```
 
-At the lines above, we create a new Entity instance and provide it with the scene object name and it’s size. Then we immediately call `create()` async method on this instance to link this new Entity to the scene object, and wait until this operation is done. Then we do the same with the second plane. 
+At the lines above, we create a new Entity instance and provide it with the scene object name and it’s size. Then we immediately call `create()` async method on this instance to link this new Entity to the scene object, and then use `await` operator to wait until this operation is done. We save the resulted object into the variable **plane0**. Then we do the same with the second plane. 
 
 ### Changing checkCollision3D() method to accept Entities
 
-Now we have to make changes in the `checkCollision3D()` function, because *plane0* and *plane1* are no longer *scene objects*. They’re *Entity instances* now, so to access objects position we should type `plane0.sceneObject.transform` instead of `plane0.transform`. Replace the old `checkCollision3D()` function code with this one:
+Now we have to make changes in the `checkCollision3D()` function, because **plane0** and **plane1** are no longer *scene objects*. They’re *Entity instances* now, so to access objects position we should type `plane0.sceneObject.transform` instead of `plane0.transform`. Replace the old `checkCollision3D()` function code with this one:
 
 ```javascript
 function checkCollision3D(entityA, entityB) {
@@ -368,7 +368,7 @@ class Entity {
 
 #### Declare a new function for array collision check
 
-Let’s declare a new function called `checkArrayCollision3D()`. It will accept an entity and an array of other entities which we will be checking for collision with an entity. We will return an `Reactive.orList()`, which will contain collision checks of every pair of entity with other entities. Copy this code below other functions in the script:
+Let’s declare a new function called `checkArrayCollision3D()`. It will accept an entity and an array of other entities which we will be checking for collision with an initial entity. We will return an `Reactive.orList()`, which will contain collision checks of every pair of initial entity with other entities. Copy this code below other functions in the script:
 
 ```javascript
 function checkArrayCollision3D(entityA, otherEntities) {
@@ -378,17 +378,17 @@ function checkArrayCollision3D(entityA, otherEntities) {
 }
 ```
 
-We’ve used `.map()` method on `otherEntities` array to return a new array. This new array contains collision checks between every pair of entity with another entities. We placed these collision checks inside `Reactive.orList()` function, which returns true if any of conditions in the list returns true.
+We’ve [used](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map) `.map()` method on `otherEntities` array to return a new array. This new array contains collision checks between every pair of entity with another entities. We placed these collision checks inside `Reactive.orList()` function, which returns true if any of conditions in the list returns true.
 
 #### Creating more plane objects for tests
 
-Create another plane object on scene. Now we need to create an Entity instance and link it to this scene object. Add the following code below the lines where we get other plane objects:
+Create another plane object on scene. Now we need to create an *Entity* instance and link it to this scene object. Add the following code below the lines where we get other plane objects:
 
 ```javascript
 const plane2 = await new Entity("plane1", Reactive.point(0.1, 0.1, 0.1)).create();
 ```
 
-Now let’s check the collision between *plane0* and *plane1*, *plane2*. Add this code just after *plane2* entity initialization:
+Now let’s check the collision between **plane0** and **plane1**, **plane2**. Add this code just after **plane2** entity initialization:
 
 ```javascript
 Diagnostics.watch("plane0 with others", checkArrayCollision3D(plane0, [plane1, plane2]));
@@ -441,7 +441,7 @@ class Entity {
 })();
 ```
 
-Save the file and return to Spark AR Studio. Try to move plane0 and look at the debug lines below. It displaces true when *plane0* collides with any other plane. 
+Save the file and return to Spark AR Studio. Try to move **plane0** and look at the debug lines below. It displaces true when **plane0** collides with any other plane. 
 
 ![](/images/watch-array.gif)
 
@@ -482,7 +482,7 @@ const material0 = await Materials.findFirst("material0");
 const material1 = await Materials.findFirst("material1");
 ```
 
-We will be detecting collision between *plane0* and *plane1* and change the color of *plane1* when they collide. Call the `checkCollision3D(plane0, plane1)` and then subscribe to the `onOn()` event of this reactive boolean. Copy the following code below materials variables declaration:
+We will be detecting collision between **plane0** and **plane1** and change the color of *plane1* when they collide. Call the `checkCollision3D(plane0, plane1)` and then subscribe to the `onOn()` event of this reactive boolean. Copy the following code below materials variables declaration:
 
 ```javascript
 checkCollision3D(plane0, plane1).onOn().subscribe(() => {
@@ -490,11 +490,11 @@ checkCollision3D(plane0, plane1).onOn().subscribe(() => {
 });
 ```
 
-Return to Spark AR and try to move *plane0* around.
+Return to Spark AR and try to move **plane0** around.
 
 ![](/images/on-collision-color-1.gif)
 
-Now *plane1* changes color when it starts to collide with *plane0*, but it doesn’t return it’s initial color, when the collision ends. Let’s fix this by subscribing to `onOff()` event of collision reactive boolean. We’ll change color back to the initial. Copy the following code below previous one:
+Now **plane1** changes color when it starts to collide with **plane0**, but it doesn’t return it’s initial color, when the collision ends. Let’s fix this by subscribing to `onOff()` event of collision reactive boolean. We’ll change color back to the initial. Copy the following code below previous one:
 
 ```javascript
 checkCollision3D(plane0, plane1).onOff().subscribe(() => {
@@ -538,7 +538,7 @@ Return to code. We have to link collider size with cube child size. Add this lin
 (await this.sceneObject.findFirst("cube")).transform.scale = this.size;
 ```
 
-Method Entity.create() should look like this:
+Method `Entity.create()` should look like this:
 
 ```javascript
 async create() {
@@ -636,4 +636,4 @@ Collider visualizations changed their size. When you’re ready with setting up 
 
 * You can [download full project](collision-tutorial.arprojpkg) to observe it
 * [Read more tutorials](https://sparkar.facebook.com/ar-studio/learn/tutorials) about Spark AR
-* DM me on [Telegram](https://t.me/rokkoeffe) to give me any feedback
+* Write me on [Telegram](https://t.me/rokkoeffe) to give me any feedback
