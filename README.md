@@ -154,9 +154,9 @@ function checkCollision(positionA, positionB, lengthA, lengthB) {
 Let’s call the `checkCollision()` function for each axis separately, so we can see at which axes these planes are intersecting. We will watch the result of this function using `Diagnostics.watch()` function, which shows reactive variable value in real time. Add this code below the planes find operations:
 
 ```javascript
-Diagnostics.watch("collision X", checkIntersection(plane0.transform.x, plane1.transform.x, Reactive.val(0.1), Reactive.val(0.1)));
-Diagnostics.watch("collision Y", checkIntersection(plane0.transform.y, plane1.transform.y, Reactive.val(0.1), Reactive.val(0.1)));
-Diagnostics.watch("collision Z", checkIntersection(plane0.transform.z, plane1.transform.z, Reactive.val(0.1), Reactive.val(0.1)));
+Diagnostics.watch("collision X", checkCollision(plane0.transform.x, plane1.transform.x, Reactive.val(0.1), Reactive.val(0.1)));
+Diagnostics.watch("collision Y", checkCollision(plane0.transform.y, plane1.transform.y, Reactive.val(0.1), Reactive.val(0.1)));
+Diagnostics.watch("collision Z", checkCollision(plane0.transform.z, plane1.transform.z, Reactive.val(0.1), Reactive.val(0.1)));
 ```
 
 We used the transform property of planes scene objects to get their coordinates on X, Y and Z axes. We wrapped lines length inside the `Reactive.val()` function to convert a *Number* value to *ScalarSignal* value, because we’re performing reactive operations with them. Now your script should look like this:
